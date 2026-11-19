@@ -1,0 +1,24 @@
+{
+  "n_train": 7200,
+  "n_test": 1800,
+  "models": {
+    "Linear SVM": {
+      "best_params": {
+        "linearsvc__C": 0.01
+      },
+      "cv_accuracy": 0.8993055555555556,
+      "test_accuracy": 0.8961111111111111,
+      "test_macro_f1": 0.8938667939725999
+    },
+    "PCA(50) + RBF SVM": {
+      "best_params": {
+        "svc__C": 5.0,
+        "svc__gamma": 0.05
+      },
+      "cv_accuracy": 0.9662500000000002,
+      "test_accuracy": 0.9655555555555555,
+      "test_macro_f1": 0.965259332700722
+    }
+  },
+  "best_model": "PCA(50) + RBF SVM"
+}

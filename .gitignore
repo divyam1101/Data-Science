@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+.ipynb_checkpoints/
+outputs/
+
+# third-party datasets: download them yourself (see data/README.md)
+data/*
+!data/README.md
+!data/digits/
+data/digits/*
+!data/digits/MyData.csv
