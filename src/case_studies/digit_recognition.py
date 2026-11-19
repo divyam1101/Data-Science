@@ -21,18 +21,16 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-import numpy as np
+import matplotlib.pyplot as plt  # noqa: E402  (backend set in _common)
 import pandas as pd
 from sklearn.decomposition import PCA
-from sklearn.metrics import (ConfusionMatrixDisplay, accuracy_score, classification_report, f1_score)
+from sklearn.metrics import ConfusionMatrixDisplay, accuracy_score, classification_report, f1_score
 from sklearn.model_selection import GridSearchCV, StratifiedKFold, train_test_split
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import FunctionTransformer
 from sklearn.svm import SVC, LinearSVC
 
 from ._common import RANDOM_STATE, ensure_dir, save_figure, save_json, scale_pixels
-
-import matplotlib.pyplot as plt  # noqa: E402  (backend set in _common)
 
 
 def load_digits_csv(path: str | Path) -> tuple[pd.DataFrame, pd.Series]:

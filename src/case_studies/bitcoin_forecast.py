@@ -24,13 +24,12 @@ import itertools
 import warnings
 from pathlib import Path
 
+import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np
 import pandas as pd
 from statsmodels.tsa.arima.model import ARIMA
 
 from ._common import ensure_dir, save_figure, save_json
-
-import matplotlib.pyplot as plt  # noqa: E402
 
 
 def load(path: str | Path) -> pd.Series:

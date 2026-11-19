@@ -23,6 +23,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
+import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np
 import pandas as pd
 from sklearn.compose import ColumnTransformer, make_column_selector
@@ -33,8 +34,6 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 from ._common import ensure_dir, save_figure, save_json
-
-import matplotlib.pyplot as plt  # noqa: E402
 
 NUMERIC = ["loan_amnt", "int_rate", "installment", "annual_inc", "dti", "revol_util",
            "inq_last_6mths", "delinq_2yrs", "open_acc", "total_acc", "pub_rec_bankruptcies",
@@ -94,7 +93,8 @@ def scorecard(df: pd.DataFrame, test_year: int) -> dict:
         return {"skipped": "not enough loans on both sides of the out-of-time split"}
     features = [c for c in NUMERIC + CATEGORICAL if c in df.columns]
     pre = ColumnTransformer([
-        ("num", make_pipeline(SimpleImputer(strategy="median"), StandardScaler()), make_column_selector(dtype_include="number")),
+        ("num", make_pipeline(SimpleImputer(strategy="median"), StandardScaler()),
+         make_column_selector(dtype_include="number")),
         ("cat", OneHotEncoder(handle_unknown="ignore", min_frequency=20), make_column_selector(dtype_exclude="number")),
     ])
     model = make_pipeline(pre, LogisticRegression(C=0.1, max_iter=5000, class_weight="balanced"))
@@ -114,7 +114,8 @@ def run(data: str | Path, out_dir: str | Path) -> dict:
     out = ensure_dir(out_dir)
     df = load(data)
     candidates = [c for c in NUMERIC + CATEGORICAL if c in df.columns]
-    iv = pd.Series({c: information_value(df, c) for c in candidates}, name="information_value").sort_values(ascending=False)
+    iv = pd.Series({c: information_value(df, c) for c in candidates}, name="information_value")
+    iv = iv.sort_values(ascending=False)
     iv.to_csv(out / "information_value.csv")
 
     seg_dir = ensure_dir(out / "segments")
@@ -122,7 +123,7 @@ def run(data: str | Path, out_dir: str | Path) -> dict:
         segment_rates(df, col).to_csv(seg_dir / f"{col}.csv")
 
     fig, axes = plt.subplots(2, 2, figsize=(12, 8))
-    for ax, col in zip(axes.flat, ["grade", "term_months", "int_rate", "purpose"]):
+    for ax, col in zip(axes.flat, ["grade", "term_months", "int_rate", "purpose"], strict=True):
         if col not in df.columns:
             ax.set_visible(False)
             continue

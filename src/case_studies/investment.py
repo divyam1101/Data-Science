@@ -25,11 +25,10 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
+import matplotlib.pyplot as plt  # noqa: E402
 import pandas as pd
 
 from ._common import ensure_dir, save_figure, save_json
-
-import matplotlib.pyplot as plt  # noqa: E402
 
 FUNDING_TYPES = ["venture", "seed", "angel", "private_equity"]
 RANGE_USD = (5_000_000, 15_000_000)
@@ -136,8 +135,8 @@ def run(data_dir: str | Path, out_dir: str | Path) -> dict:
     axes[0].axhspan(RANGE_USD[0] / 1e6, RANGE_USD[1] / 1e6, color="green", alpha=0.15, label="target range")
     axes[0].set(title="Median round size by funding type", ylabel="USD million")
     axes[0].legend()
-    (countries["total_usd"] / 1e9).plot.bar(ax=axes[1], rot=0,
-                                            color=["tab:blue" if e else "tab:grey" for e in countries["english_speaking"]])
+    colours = ["tab:blue" if e else "tab:grey" for e in countries["english_speaking"]]
+    (countries["total_usd"] / 1e9).plot.bar(ax=axes[1], rot=0, color=colours)
     axes[1].set(title=f"Top 9 countries, total {funding_type} funding", ylabel="USD billion")
     counts = pd.DataFrame({c: r["by_sector"]["investments"] for c, r in sector_results.items()}).fillna(0)
     counts.plot.bar(ax=axes[2], rot=60)

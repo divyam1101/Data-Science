@@ -23,11 +23,10 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
+import matplotlib.pyplot as plt  # noqa: E402
 import pandas as pd
 
 from ._common import ensure_dir, save_figure, save_json
-
-import matplotlib.pyplot as plt  # noqa: E402
 
 SLOTS = [(0, 4, "Late night (00-03)"), (4, 10, "Early morning (04-09)"), (10, 17, "Daytime (10-16)"),
          (17, 22, "Evening (17-21)"), (22, 24, "Night (22-23)")]
@@ -80,7 +79,7 @@ def run(data: str | Path, out_dir: str | Path) -> dict:
     table.to_csv(out / "supply_demand_gap.csv")
 
     fig, axes = plt.subplots(1, 2, figsize=(14, 4.5), sharey=True)
-    for ax, (point, sub) in zip(axes, df.groupby("pickup_point")):
+    for ax, (point, sub) in zip(axes, df.groupby("pickup_point"), strict=False):
         counts = sub.pivot_table(index="hour", columns="status", values="request_id", aggfunc="size", fill_value=0)
         counts.reindex(range(24), fill_value=0).plot.bar(stacked=True, ax=ax, width=0.85, rot=0)
         ax.set(title=f"Requests from {point} by hour", xlabel="hour of request", ylabel="requests")

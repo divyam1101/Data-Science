@@ -4,9 +4,15 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from case_studies import (bitcoin_forecast, car_price, credit_risk, digit_recognition, hr_attrition, investment,
-                          uber_supply_demand)
-
+from case_studies import (
+    bitcoin_forecast,
+    car_price,
+    credit_risk,
+    digit_recognition,
+    hr_attrition,
+    investment,
+    uber_supply_demand,
+)
 
 # ------------------------------------------------------------------ car price
 

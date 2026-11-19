@@ -27,21 +27,26 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
+import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np
 import pandas as pd
 from sklearn.compose import ColumnTransformer, make_column_selector
 from sklearn.ensemble import HistGradientBoostingClassifier
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegressionCV
-from sklearn.metrics import (RocCurveDisplay, average_precision_score, brier_score_loss, confusion_matrix,
-                             roc_auc_score, roc_curve)
+from sklearn.metrics import (
+    RocCurveDisplay,
+    average_precision_score,
+    brier_score_loss,
+    confusion_matrix,
+    roc_auc_score,
+    roc_curve,
+)
 from sklearn.model_selection import StratifiedKFold, cross_val_predict, train_test_split
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 from ._common import RANDOM_STATE, ensure_dir, save_figure, save_json
-
-import matplotlib.pyplot as plt  # noqa: E402
 
 CONSTANT_COLUMNS = ["EmployeeCount", "StandardHours", "Over18"]
 

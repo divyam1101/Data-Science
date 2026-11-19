@@ -1,4 +1,4 @@
-"""Synthetic datasets with the same schema as the real course datasets.
+﻿"""Synthetic datasets with the same schema as the real course datasets.
 
 They let every case study run end to end in CI without redistributing third-party data.
 """
@@ -64,7 +64,8 @@ def hr_dir(tmp_path, rng):
         "DistanceFromHome": rng.integers(1, 30, n), "Education": rng.integers(1, 6, n),
         "EducationField": rng.choice(["Life Sciences", "Medical", "Marketing"], n),
         "EmployeeCount": 1, "EmployeeID": ids, "Gender": rng.choice(["Male", "Female"], n),
-        "JobLevel": rng.integers(1, 6, n), "JobRole": rng.choice(["Sales Executive", "Research Scientist", "Manager"], n),
+        "JobLevel": rng.integers(1, 6, n),
+        "JobRole": rng.choice(["Sales Executive", "Research Scientist", "Manager"], n),
         "MaritalStatus": rng.choice(["Single", "Married", "Divorced"], n),
         "MonthlyIncome": rng.integers(10_000, 200_000, n),
         "NumCompaniesWorked": np.where(rng.random(n) < 0.02, np.nan, rng.integers(0, 10, n)),
@@ -77,7 +78,8 @@ def hr_dir(tmp_path, rng):
     pd.DataFrame({"EmployeeID": ids, "EnvironmentSatisfaction": rng.integers(1, 5, n).astype(float),
                   "JobSatisfaction": rng.integers(1, 5, n), "WorkLifeBalance": rng.integers(1, 5, n)}
                  ).to_csv(tmp_path / "employee_survey_data.csv", index=False)
-    pd.DataFrame({"EmployeeID": ids, "JobInvolvement": rng.integers(1, 5, n), "PerformanceRating": rng.integers(3, 5, n)}
+    pd.DataFrame({"EmployeeID": ids, "JobInvolvement": rng.integers(1, 5, n),
+                  "PerformanceRating": rng.integers(3, 5, n)}
                  ).to_csv(tmp_path / "manager_survey_data.csv", index=False)
 
     days = pd.bdate_range("2015-01-01", periods=15)
@@ -127,8 +129,10 @@ def loan_csv(tmp_path, rng):
 @pytest.fixture
 def investment_dir(tmp_path, rng):
     n_companies = 300
-    countries = rng.choice(["USA", "GBR", "IND", "CHN", "CAN", "DEU"], n_companies, p=[0.4, 0.12, 0.12, 0.2, 0.08, 0.08])
-    categories = rng.choice(["Analytics|Big Data", "Biotechnology", "Enterprise 2.0", "Games|Mobile", "Finance"], n_companies)
+    countries = rng.choice(["USA", "GBR", "IND", "CHN", "CAN", "DEU"], n_companies,
+                           p=[0.4, 0.12, 0.12, 0.2, 0.08, 0.08])
+    categories = rng.choice(["Analytics|Big Data", "Biotechnology", "Enterprise 2.0", "Games|Mobile", "Finance"],
+                            n_companies)
     companies = pd.DataFrame({
         "permalink": [f"/Organization/Co-{i}" for i in range(n_companies)],
         "name": [f"Company {i}" for i in range(n_companies)],
@@ -137,7 +141,8 @@ def investment_dir(tmp_path, rng):
     })
     companies.to_csv(tmp_path / "companies.txt", sep="\t", index=False)
     n_rounds = 1500
-    kind = rng.choice(["venture", "seed", "angel", "private_equity", "debt_financing"], n_rounds, p=[0.5, 0.2, 0.1, 0.1, 0.1])
+    kind = rng.choice(["venture", "seed", "angel", "private_equity", "debt_financing"], n_rounds,
+                      p=[0.5, 0.2, 0.1, 0.1, 0.1])
     scale = {"venture": 1e7, "seed": 5e5, "angel": 8e5, "private_equity": 6e7, "debt_financing": 3e6}
     amount = np.array([rng.lognormal(np.log(scale[k]), 0.6) for k in kind])
     amount[rng.random(n_rounds) < 0.1] = np.nan
@@ -172,8 +177,8 @@ def uber_csv(tmp_path, rng):
                       np.where(evening_airport & (rng.random(n) < 0.7), "No Cars Available",
                                np.where(rng.random(n) < 0.1, "Cancelled", "Trip Completed")))
     request = [f"{d}/7/2016 {h}:{m:02d}" if i % 2 else f"{d}-07-2016 {h:02d}:{m:02d}:00"
-               for i, (d, h, m) in enumerate(zip(day, hour, minute))]
-    drop = [r if s == "Trip Completed" else None for r, s in zip(request, status)]
+               for i, (d, h, m) in enumerate(zip(day, hour, minute, strict=True))]
+    drop = [r if s == "Trip Completed" else None for r, s in zip(request, status, strict=True)]
     pd.DataFrame({"Request id": range(1, n + 1), "Pickup point": point,
                   "Driver id": np.where(status == "No Cars Available", np.nan, rng.integers(1, 300, n)),
                   "Status": status, "Request timestamp": request, "Drop timestamp": drop}

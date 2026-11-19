@@ -26,6 +26,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
+import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np
 import pandas as pd
 import statsmodels.api as sm
@@ -39,8 +40,6 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from statsmodels.stats.outliers_influence import variance_inflation_factor
 
 from ._common import RANDOM_STATE, ensure_dir, save_figure, save_json
-
-import matplotlib.pyplot as plt  # noqa: E402
 
 BRAND_FIXES = {
     "maxda": "mazda", "porcshce": "porsche", "toyouta": "toyota",
@@ -82,7 +81,7 @@ def ols_on_selected(X_train: pd.DataFrame, y_train: pd.Series, lasso_pipeline, m
     coefs = lasso_pipeline[-1].coef_
     names = pre.get_feature_names_out()
     design = pd.DataFrame(pre.transform(X_train), columns=names, index=X_train.index)
-    selected = [n for n, c in zip(names, coefs) if abs(c) > 1e-8]
+    selected = [n for n, c in zip(names, coefs, strict=True) if abs(c) > 1e-8]
     design = design[selected]
     while design.shape[1] > 1:
         vifs = pd.Series([variance_inflation_factor(design.values, i) for i in range(design.shape[1])],
